@@ -1,7 +1,8 @@
 import { execSync } from "child_process"
-import { sync as rimraf } from "rimraf"
+import { sync as rm } from "rimraf"
 import { version } from "../package.json"
 
+const cd = process.chdir
 const sh = (command: string) => {
     console.log("$", command)
     const stdout = execSync(command, {
@@ -30,7 +31,7 @@ const vNBranch = `v${version.split(".")[0]}`
 sh(`git tag -d "v${version}"`)
 
 // Make the release commit that contains only `dist` directory.
-process.chdir("./dist")
+cd("./dist")
 sh("git init")
 sh(`git remote add origin "${origin}"`)
 sh("git add .")
@@ -39,7 +40,7 @@ sh(`git commit -m "${commitMessage}"`)
 if (isStable) {
     if (ok(`git fetch origin "${vNBranch}"`)) {
         sh(`git checkout "${vNBranch}"`)
-        rimraf("*")
+        rm("*")
         sh("git checkout master -- .")
         sh("git add .")
         sh(`git commit -m "${commitMessage}"`)
@@ -53,6 +54,6 @@ sh(`git tag "v${version}"`)
 sh(`git push origin "v${version}"`)
 
 // Clean
-rimraf(".git")
-process.chdir("..")
+rm(".git")
+cd("..")
 sh("git pull")
