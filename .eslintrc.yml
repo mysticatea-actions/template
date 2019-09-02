@@ -1,0 +1,14 @@
+root: true
+extends:
+- plugin:@mysticatea/es2019
+- plugin:@mysticatea/+node
+
+rules:
+  no-process-env: "off"
+  no-void: "off"
+  "@mysticatea/ts/no-unnecessary-type-assertion": "off"
+
+overrides:
+- files: scripts/**
+  rules:
+    no-console: "off"
