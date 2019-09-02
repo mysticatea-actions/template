@@ -35,19 +35,22 @@ sh("git init")
 sh(`git remote add origin "${origin}"`)
 sh("git add .")
 sh(`git commit -m "${commitMessage}"`)
-if (isStable && ok(`git fetch origin "${vNBranch}"`)) {
-    // Push it after the current vN branch if this is stable.
-    sh(`git checkout "${vNBranch}"`)
-    rimraf("*")
-    sh("git checkout master -- .")
-    sh("git add .")
-    sh(`git commit -m "${commitMessage}"`)
-} else {
-    // Push it as an orphan commit if this is beta.
-    sh(`git checkout -b "${vNBranch}"`)
+// Push the release to the vN branch (e.g., `v0`, `v1`, ...) if stable.
+if (isStable) {
+    if (ok(`git fetch origin "${vNBranch}"`)) {
+        sh(`git checkout "${vNBranch}"`)
+        rimraf("*")
+        sh("git checkout master -- .")
+        sh("git add .")
+        sh(`git commit -m "${commitMessage}"`)
+    } else {
+        sh(`git checkout -b "${vNBranch}"`)
+    }
+    sh(`git push origin "${vNBranch}"`)
 }
+// Push the release tag.
 sh(`git tag "v${version}"`)
-sh(`git push origin "${vNBranch}" "v${version}"`)
+sh(`git push origin "v${version}"`)
 
 // Clean
 rimraf(".git")
