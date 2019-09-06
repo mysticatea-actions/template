@@ -1,41 +1,37 @@
 {
   "private": true,
-  "name": "manage-version-tags",
+  "name": "",
   "version": "0.0.0",
-  "description": "GitHub Actions to manage version tags.",
+  "description": "",
   "engines": {
     "node": ">=12.0.0"
   },
-  "main": "index.js",
+  "main": "lib/index",
   "files": [
-    "*.js",
-    "*.d.ts",
-    "*.map"
+    "lib"
   ],
   "dependencies": {
     "@actions/core": "^1.0.0"
   },
   "devDependencies": {
     "@mysticatea/eslint-plugin": "^11.0.0",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.3",
     "@types/rimraf": "^2.0.2",
-    "cpx": "^1.5.0",
+    "codecov": "^3.5.0",
     "eslint": "^6.3.0",
     "mocha": "^6.2.0",
-    "npm-run-all": "^4.1.5",
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.6.2"
   },
   "scripts": {
-    "build": "run-s build:*",
-    "build:clean": "rimraf \"dist/*\"",
-    "build:tsc": "tsc -p tsconfig.build.json",
-    "build:cpx": "cpx \"{action.yml,LICENSE,package-lock.json,package.json,README.md}\" dist",
-    "build:npm": "cd dist && npm install --production",
-    "lint": "eslint \"{scripts,src,test}/**/*.{js,ts}\"",
-    "test": "npm run -s lint",
+    "build": "ts-node scripts/build",
+    "codecov": "codecov --disable=gcov -t ${CODECOV_TOKEN}",
+    "lint": "eslint lib scripts test --ext .ts",
+    "pretest": "npm run -s lint && tsc --noEmit",
+    "test": "nyc mocha \"test/**/*.ts\"",
     "preversion": "npm test",
     "version": "npm run -s build",
     "postversion": "git push && ts-node scripts/release"

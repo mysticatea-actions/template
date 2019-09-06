@@ -1,28 +1,23 @@
-import { execSync } from "child_process"
-import { sync as rm } from "rimraf"
+/**
+ * Release the action (`dist` directory).
+ *
+ * This script does three things:
+ *
+ * 1. Make a commit with the content of `dist` directory.
+ * 2. Connect the commit to the release branch such as `v0`, `v1`, ..., `vN`.
+ * 3. Make a version tag at the commit.
+ *
+ * If the version was a prerelease version (e.g. `1.0.0-beta.0`), this script
+ * skips the step 2. Just makes the version tag at a orphan commit.
+ *
+ * This script supposes to be run by npm's `postversion` script.
+ * This script requires `user.name` and `user.email` in the global config of git.
+ */
 import { version } from "../package.json"
+import { cd, rmrf, sh, stdout, test } from "./lib/shell"
 
-const cd = process.chdir
-const sh = (command: string) => {
-    console.log("$", command)
-    const stdout = execSync(command, {
-        encoding: "utf8",
-        stdio: ["inherit", "pipe", "inherit"],
-    }).trim()
-    console.log(stdout)
-    return stdout
-}
-const ok = (command: string) => {
-    try {
-        sh(command)
-        return true
-    } catch {
-        return false
-    }
-}
-
-const origin = sh("git remote get-url origin")
-const sha1 = sh('git log -1 --format="%h"')
+const origin = stdout("git remote get-url origin")
+const sha1 = stdout('git log -1 --format="%h"')
 const commitMessage = `🔖 ${version} (built with ${sha1})`
 const isStable = /^\d+\.\d+\.\d+$/u.test(version)
 const vNBranch = `v${version.split(".")[0]}`
@@ -38,9 +33,9 @@ sh("git add .")
 sh(`git commit -m "${commitMessage}"`)
 // Push the release to the vN branch (e.g., `v0`, `v1`, ...) if stable.
 if (isStable) {
-    if (ok(`git fetch origin "${vNBranch}"`)) {
+    if (test(`git fetch origin "${vNBranch}"`)) {
         sh(`git checkout "${vNBranch}"`)
-        rm("*")
+        rmrf("*")
         sh("git checkout master -- .")
         sh("git add .")
         sh(`git commit -m "${commitMessage}"`)
@@ -54,6 +49,6 @@ sh(`git tag "v${version}"`)
 sh(`git push origin "v${version}"`)
 
 // Clean
-rm(".git")
+rmrf(".git")
 cd("..")
 sh("git pull")
