@@ -1,7 +1,6 @@
 # Action Template
 
 [![Build Status](https://github.com/mysticatea-actions/template/workflows/CI/badge.svg)](https://github.com/mysticatea-actions/template/actions)
-[![Coverage Status](https://codecov.io/gh/mysticatea-actions/template/branch/master/graph/badge.svg)](https://codecov.io/gh/mysticatea-actions/template)
 [![Dependency Status](https://david-dm.org/mysticatea-actions/template.svg)](https://david-dm.org/mysticatea-actions/template)
 
 This is a template for GitHub Actions with TypeScript.

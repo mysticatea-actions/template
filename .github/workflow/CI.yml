@@ -22,7 +22,3 @@ jobs:
         run: npm install
       - name: Test
         run: npm test
-      - name: Send Coverage
-        run: npm run -s codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
