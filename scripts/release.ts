@@ -28,27 +28,30 @@ sh(`git tag -d "v${version}"`)
 // Make the release commit that contains only `dist` directory.
 cd("./dist")
 sh("git init")
-sh(`git remote add origin "${origin}"`)
-sh("git add .")
-sh(`git commit -m "${commitMessage}"`)
-// Push the release to the vN branch (e.g., `v0`, `v1`, ...) if stable.
-if (isStable) {
-    if (test(`git fetch origin "${vNBranch}"`)) {
-        sh(`git checkout "${vNBranch}"`)
-        rmrf("*")
-        sh("git checkout master -- .")
-        sh("git add .")
-        sh(`git commit -m "${commitMessage}"`)
-    } else {
-        sh(`git checkout -b "${vNBranch}"`)
+try {
+    sh(`git remote add origin "${origin}"`)
+    sh("git add .")
+    sh(`git commit -m "${commitMessage}"`)
+    // Push the release to the vN branch (e.g., `v0`, `v1`, ...) if stable.
+    if (isStable) {
+        if (test(`git fetch origin "${vNBranch}"`)) {
+            sh(`git checkout "${vNBranch}"`)
+            rmrf("*")
+            sh("git checkout master -- .")
+            sh("git add .")
+            sh(`git commit -m "${commitMessage}"`)
+        } else {
+            sh(`git checkout -b "${vNBranch}"`)
+        }
+        sh(`git push origin "${vNBranch}"`)
     }
-    sh(`git push origin "${vNBranch}"`)
+    // Push the release tag.
+    sh(`git tag "v${version}"`)
+    sh(`git push origin "v${version}"`)
+} finally {
+    rmrf(".git")
 }
-// Push the release tag.
-sh(`git tag "v${version}"`)
-sh(`git push origin "v${version}"`)
 
-// Clean
-rmrf(".git")
+// Fetch the new commit and tag.
 cd("..")
-sh("git pull")
+sh(`git pull origin "${vNBranch}" "v${version}"`)

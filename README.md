@@ -24,6 +24,5 @@ This is a template for GitHub Actions with TypeScript.
     1. Run tests.
     1. Bump version.
     1. Build the code.
-    1. Commit and push it.
     1. Release it with [scripts/release.ts](scripts/release.ts) script.
 -   `npm run build` ... Build code then create `dist` directory.
