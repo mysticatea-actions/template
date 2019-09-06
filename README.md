@@ -5,6 +5,15 @@
 
 This is a template for GitHub Actions with TypeScript.
 
+## Usage
+
+1. Click `"Use this template"` button on GitHub (https://github.com/mysticatea-actions/template).
+1. Input the information of your new reporsitory then click `"Create repository from template"` button.
+1. Update `package.json` file with the correct fields of name, description, repository, author, bugs, and homepage.
+1. Update `LICENSE` file with your license.
+1. Update `README.md` file.
+1. Start to develop.
+
 ## File Structure
 
 ```
