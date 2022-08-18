@@ -11,7 +11,7 @@
     "lib"
   ],
   "dependencies": {
-    "@actions/core": "^1.0.0"
+    "@actions/core": "^1.9.1"
   },
   "devDependencies": {
     "@mysticatea/eslint-plugin": "^11.0.0",
